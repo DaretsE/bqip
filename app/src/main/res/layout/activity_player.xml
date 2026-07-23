@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:keepScreenOn="true">
+
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/playerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:use_controller="false"
+        app:surface_type="surface_view" />
+
+    <!-- OSD -->
+    <LinearLayout
+        android:id="@+id/osdPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:background="@drawable/osd_bg"
+        android:paddingLeft="40dp" android:paddingRight="40dp"
+        android:paddingTop="44dp" android:paddingBottom="22dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center_vertical">
+
+            <ImageView android:id="@+id/osdLogo"
+                android:layout_width="76dp" android:layout_height="76dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/logo_bg" android:padding="6dp"
+                android:scaleType="fitCenter" />
+
+            <LinearLayout
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical">
+
+                <TextView android:id="@+id/osdChannel"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:textColor="@color/text" android:textSize="26sp" android:textStyle="bold"
+                    android:singleLine="true" android:ellipsize="end" />
+
+                <TextView android:id="@+id/osdProgram"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/text2" android:textSize="17sp"
+                    android:singleLine="true" android:ellipsize="end" />
+
+                <ProgressBar android:id="@+id/osdProgress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent" android:layout_height="6dp"
+                    android:layout_marginTop="8dp"
+                    android:progressDrawable="@drawable/progress_osd"
+                    android:max="100" android:visibility="invisible" />
+
+                <TextView android:id="@+id/osdRemain"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/accent2" android:textSize="13sp"
+                    android:singleLine="true" android:visibility="gone" />
+
+                <TextView android:id="@+id/osdNext"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textColor="@color/text_dim" android:textSize="14sp"
+                    android:singleLine="true" android:ellipsize="end" android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginLeft="18dp"
+                android:orientation="vertical" android:gravity="end">
+
+                <TextView android:id="@+id/osdLive"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:background="@drawable/live_chip"
+                    android:text="● ПРЯМОЙ ЭФИР"
+                    android:textColor="@color/live_red" android:textSize="12sp"
+                    android:textStyle="bold" android:visibility="gone" />
+
+                <TextView android:id="@+id/osdBadge"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/badge_bg" android:textColor="@color/text"
+                    android:textSize="14sp" android:textStyle="bold" android:visibility="gone" />
+
+                <TextView android:id="@+id/osdClock"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/text" android:textSize="22sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/osdButtons"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:orientation="horizontal" android:gravity="center"
+            android:visibility="gone">
+
+            <TextView android:id="@+id/osdBtnFav"
+                android:layout_width="190dp" android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/osd_btn"
+                android:focusable="true" android:clickable="true"
+                android:gravity="center" android:singleLine="true"
+                android:paddingTop="12dp" android:paddingBottom="12dp"
+                android:text="В избранное"
+                android:textColor="@color/text" android:textSize="15sp" />
+
+            <TextView android:id="@+id/osdBtnPrev"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/osd_btn"
+                android:focusable="true" android:clickable="true"
+                android:gravity="center" android:singleLine="true"
+                android:paddingLeft="20dp" android:paddingRight="20dp"
+                android:paddingTop="12dp" android:paddingBottom="12dp"
+                android:text="Пред. канал"
+                android:textColor="@color/text" android:textSize="15sp" />
+
+            <TextView android:id="@+id/osdBtnNext"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/osd_btn"
+                android:focusable="true" android:clickable="true"
+                android:gravity="center" android:singleLine="true"
+                android:paddingLeft="20dp" android:paddingRight="20dp"
+                android:paddingTop="12dp" android:paddingBottom="12dp"
+                android:text="След. канал"
+                android:textColor="@color/text" android:textSize="15sp" />
+
+            <TextView android:id="@+id/osdBtnLast"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:background="@drawable/osd_btn"
+                android:focusable="true" android:clickable="true"
+                android:gravity="center" android:singleLine="true"
+                android:paddingLeft="20dp" android:paddingRight="20dp"
+                android:paddingTop="12dp" android:paddingBottom="12dp"
+                android:text="Прошлый канал"
+                android:textColor="@color/text" android:textSize="15sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView android:id="@+id/favStar"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_gravity="center" android:textSize="120sp" android:text="★"
+        android:textColor="@color/accent2" android:visibility="gone" />
+
+    <TextView android:id="@+id/errorMsg"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_gravity="center" android:background="@drawable/toast_bg"
+        android:textColor="@color/text" android:textSize="18sp" android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/browserOverlay"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:background="@color/overlay_soft" android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/browserList"
+            android:layout_width="540dp" android:layout_height="match_parent"
+            android:layout_marginLeft="88dp"
+            android:orientation="vertical" android:background="@drawable/panel_bg_left"
+            android:paddingLeft="44dp" android:paddingRight="16dp"
+            android:paddingTop="54dp" android:paddingBottom="18dp">
+
+            <TextView android:id="@+id/browserPlName"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="@color/accent2" android:textSize="12sp" android:textStyle="bold"
+                android:letterSpacing="0.12" android:alpha="0.9"
+                android:paddingLeft="4dp" android:paddingRight="4dp" android:paddingBottom="6dp"
+                android:singleLine="true" android:ellipsize="end" />
+
+            <TextView android:id="@+id/browserHeader"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="#FFFFFFFF" android:textSize="22sp" android:textStyle="bold"
+                android:paddingLeft="4dp" android:paddingRight="4dp"
+                android:paddingTop="6dp" android:paddingBottom="8dp"
+                android:singleLine="true" android:ellipsize="end" />
+
+            <View
+                android:layout_width="40dp" android:layout_height="3dp"
+                android:layout_marginLeft="4dp" android:layout_marginBottom="12dp"
+                android:background="@drawable/hdr_underline" />
+
+            <ListView android:id="@+id/browserListView"
+                android:layout_width="match_parent" android:layout_height="match_parent"
+                android:listSelector="@drawable/list_focus" android:drawSelectorOnTop="true"
+                android:divider="@null" android:dividerHeight="0dp"
+                android:scrollbars="none"
+                android:paddingTop="6dp" android:paddingBottom="6dp"
+                android:clipToPadding="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/previewCard"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_gravity="bottom" android:layout_marginLeft="628dp"
+            android:orientation="vertical" android:background="@drawable/osd_bg"
+            android:paddingLeft="32dp" android:paddingRight="32dp"
+            android:paddingTop="44dp" android:paddingBottom="26dp">
+
+            <LinearLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical">
+
+                <ImageView android:id="@+id/prevLogo"
+                    android:layout_width="64dp" android:layout_height="64dp"
+                    android:layout_marginRight="16dp" android:scaleType="fitCenter" />
+
+                <LinearLayout
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical">
+
+                    <TextView android:id="@+id/prevName"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:textColor="@color/text" android:textSize="22sp" android:textStyle="bold"
+                        android:singleLine="true" android:ellipsize="end" />
+
+                    <TextView android:id="@+id/prevNow"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:textColor="@color/text2" android:textSize="16sp"
+                        android:singleLine="true" android:ellipsize="end" />
+
+                    <ProgressBar android:id="@+id/prevProgress"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent" android:layout_height="4dp"
+                        android:layout_marginTop="6dp" android:max="100" android:visibility="invisible" />
+
+                    <TextView android:id="@+id/prevRemain"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:textColor="@color/accent2" android:textSize="13sp"
+                        android:layout_marginTop="3dp" android:gravity="end" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView android:id="@+id/prevNext"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" android:textColor="@color/text_dim" android:textSize="14sp"
+                android:singleLine="true" android:ellipsize="end" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/rightPanel"
+        android:layout_width="500dp" android:layout_height="match_parent"
+        android:layout_gravity="right" android:orientation="vertical"
+        android:background="@drawable/panel_bg_right"
+        android:paddingLeft="18dp" android:paddingRight="18dp"
+        android:paddingTop="44dp" android:paddingBottom="20dp" android:visibility="gone">
+
+        <TextView android:id="@+id/epgHeader"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="@color/accent2" android:textSize="20sp" android:textStyle="bold"
+            android:singleLine="true" android:ellipsize="end" />
+
+        <LinearLayout
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:background="@drawable/now_block_bg"
+            android:padding="12dp" android:layout_marginTop="10dp" android:layout_marginBottom="10dp">
+
+            <TextView android:id="@+id/nowTitle"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="@color/text" android:textSize="18sp" android:textStyle="bold" />
+
+            <TextView android:id="@+id/nowTime"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="@color/text_dim" android:textSize="13sp" android:layout_marginTop="2dp" />
+
+            <ProgressBar android:id="@+id/nowProgress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent" android:layout_height="5dp"
+                android:layout_marginTop="8dp" android:max="100" />
+
+            <TextView android:id="@+id/nowRemain"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="@color/accent2" android:textSize="13sp"
+                android:layout_marginTop="4dp" android:gravity="end" />
+
+            <TextView android:id="@+id/nowDesc"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="@color/text2" android:textSize="14sp" android:layout_marginTop="8dp"
+                android:maxLines="5" android:ellipsize="end" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="ПРОГРАММА ПЕРЕДАЧ" android:textColor="@color/text_dim2" android:textSize="12sp"
+            android:paddingBottom="6dp" />
+
+        <ListView android:id="@+id/epgList"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:listSelector="@drawable/list_focus" android:drawSelectorOnTop="true" android:divider="@color/hairline" android:dividerHeight="1dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/setupOverlay"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:orientation="vertical" android:gravity="center"
+        android:background="@color/overlay_dark" android:padding="24dp" android:visibility="gone">
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="BQDiptv" android:textColor="@color/text" android:textSize="40sp" android:textStyle="bold" />
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="18dp" android:gravity="center" android:textColor="@color/text2" android:textSize="18sp"
+            android:text="Отсканируйте QR-код телефоном или откройте адрес в браузере
+(телефон и ТВ должны быть в одной Wi-Fi сети)" />
+
+        <ImageView android:id="@+id/qrImage"
+            android:layout_width="320dp" android:layout_height="320dp"
+            android:layout_marginTop="20dp" android:background="@color/text" android:padding="10dp"
+            android:scaleType="fitCenter" />
+
+        <TextView android:id="@+id/setupUrl"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="18dp" android:background="@drawable/toast_bg"
+            android:textColor="@color/accent2" android:textSize="30sp" android:textStyle="bold" />
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" android:gravity="center" android:textColor="@color/text_dim" android:textSize="16sp"
+            android:text="На странице настройки добавьте плейлист M3U — эфир запустится сам.
+Нажмите «Назад», чтобы закрыть. Снова открыть — в Настройках." />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/searchOverlay"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:background="@color/overlay_dark"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/searchContent"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingStart="116dp" android:paddingEnd="28dp"
+            android:paddingTop="52dp" android:paddingBottom="28dp">
+
+            <TextView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="🔎  Поиск передачи" android:textColor="@color/text"
+                android:textSize="26sp" android:textStyle="bold" android:paddingBottom="14dp" />
+
+            <FrameLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:background="@color/card_bg">
+
+                <EditText
+                    android:id="@+id/searchInput"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:hint="Название фильма или передачи"
+                    android:textColor="@color/text" android:textColorHint="@color/text_dim2"
+                    android:textSize="20sp" android:padding="16dp"
+                    android:background="@null"
+                    android:singleLine="true"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/searchStatus"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="@color/text_dim" android:textSize="14sp"
+                android:paddingTop="14dp" android:paddingBottom="6dp" />
+
+            <ListView
+                android:id="@+id/searchResults"
+                android:layout_width="match_parent" android:layout_height="match_parent"
+                android:listSelector="@drawable/list_focus" android:drawSelectorOnTop="true" android:divider="@color/hairline" android:dividerHeight="1dp"
+                android:scrollbars="none"
+                android:paddingTop="6dp" android:paddingBottom="6dp"
+                android:clipToPadding="false" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/screensaver"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:background="#000000" android:visibility="gone">
+
+        <TextView android:id="@+id/ssClock"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textColor="#3C5A63" android:textSize="56sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/settingsPanel"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:background="@color/overlay_soft"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/setListPanel"
+            android:layout_width="400dp" android:layout_height="match_parent"
+            android:layout_marginLeft="88dp"
+            android:orientation="vertical"
+            android:background="@drawable/panel_bg_left"
+            android:paddingLeft="30dp" android:paddingRight="16dp"
+            android:paddingTop="54dp" android:paddingBottom="16dp">
+
+            <TextView android:id="@+id/setListVersion"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="@color/accent2" android:textSize="12sp" android:textStyle="bold"
+                android:letterSpacing="0.12" android:alpha="0.9"
+                android:paddingLeft="4dp" android:paddingRight="4dp" android:paddingBottom="6dp"
+                android:singleLine="true" android:ellipsize="end" />
+
+            <TextView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Настройки"
+                android:textColor="#FFFFFFFF" android:textSize="22sp" android:textStyle="bold"
+                android:paddingLeft="4dp" android:paddingRight="4dp"
+                android:paddingTop="6dp" android:paddingBottom="8dp" />
+
+            <View
+                android:layout_width="40dp" android:layout_height="3dp"
+                android:layout_marginLeft="4dp" android:layout_marginBottom="12dp"
+                android:background="@drawable/hdr_underline" />
+
+            <ListView
+                android:id="@+id/setList"
+                android:layout_width="match_parent" android:layout_height="match_parent"
+                android:listSelector="@drawable/list_focus"
+                android:drawSelectorOnTop="true"
+                android:divider="@null" android:dividerHeight="0dp"
+                android:scrollbars="none"
+                android:paddingTop="6dp" android:paddingBottom="6dp"
+                android:clipToPadding="false" />
+        </LinearLayout>
+
+        <ScrollView
+            android:id="@+id/setDetailScroll"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:layout_marginLeft="488dp"
+            android:background="@color/panel"
+            android:paddingLeft="34dp" android:paddingRight="34dp"
+            android:paddingTop="52dp" android:paddingBottom="36dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/setDetail"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/leftMenu"
+        android:layout_width="392dp" android:layout_height="match_parent"
+        android:layout_gravity="left" android:orientation="vertical"
+        android:background="@drawable/panel_bg_left"
+        android:paddingLeft="16dp" android:paddingRight="16dp"
+        android:paddingTop="54dp" android:paddingBottom="20dp" android:visibility="gone">
+
+        <ListView android:id="@+id/catList"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:listSelector="@drawable/list_focus" android:drawSelectorOnTop="true"
+            android:divider="@null" android:dividerHeight="0dp"
+            android:scrollbars="none"
+            android:paddingTop="8dp" android:paddingBottom="8dp"
+            android:clipToPadding="false" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/toastView"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="120dp"
+        android:background="@drawable/toast_bg"
+        android:textColor="@color/text" android:textSize="18sp"
+        android:gravity="center"
+        android:maxWidth="700dp"
+        android:visibility="gone" />
+</FrameLayout>
