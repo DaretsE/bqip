@@ -120,7 +120,8 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             } catch (e: Exception) {
                 _state.value = _state.value.copy(
                     loading = false,
-                    errorMessage = "Не удалось загрузить плейлист: ${e.message}"
+                    errorMessage = "Не удалось загрузить плейлист: ${e.message}",
+                    toast = "Не удалось загрузить плейлист: ${e.message}"
                 )
             }
         }

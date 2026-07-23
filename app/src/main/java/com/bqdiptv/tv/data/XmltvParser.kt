@@ -1,6 +1,8 @@
 package com.bqdiptv.tv.data
 
 import com.bqdiptv.tv.model.EpgProgram
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.xmlpull.v1.XmlPullParser
@@ -18,12 +20,12 @@ object XmltvParser {
 
     private val fmt = SimpleDateFormat("yyyyMMddHHmmss Z", Locale.US)
 
-    suspend fun fetch(url: String, client: OkHttpClient): List<EpgProgram> {
+    suspend fun fetch(url: String, client: OkHttpClient): List<EpgProgram> = withContext(Dispatchers.IO) {
         val request = Request.Builder().url(url).build()
         client.newCall(request).execute().use { resp ->
             if (!resp.isSuccessful) throw IllegalStateException("HTTP ${resp.code}")
-            val body = resp.body?.string() ?: return emptyList()
-            return parse(body)
+            val body = resp.body?.string() ?: return@withContext emptyList()
+            parse(body)
         }
     }
 

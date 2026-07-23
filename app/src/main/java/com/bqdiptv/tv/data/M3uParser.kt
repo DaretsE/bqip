@@ -2,6 +2,8 @@ package com.bqdiptv.tv.data
 
 import com.bqdiptv.tv.model.Category
 import com.bqdiptv.tv.model.Channel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.BufferedReader
@@ -15,12 +17,12 @@ object M3uParser {
 
     private val attrRegex = Regex("""([a-zA-Z0-9\-]+)="([^"]*)"""")
 
-    suspend fun fetch(url: String, client: OkHttpClient): List<Channel> {
+    suspend fun fetch(url: String, client: OkHttpClient): List<Channel> = withContext(Dispatchers.IO) {
         val request = Request.Builder().url(url).build()
         client.newCall(request).execute().use { resp ->
             if (!resp.isSuccessful) throw IllegalStateException("HTTP ${resp.code}")
             val body = resp.body?.string() ?: throw IllegalStateException("Пустой ответ")
-            return parse(body)
+            parse(body)
         }
     }
 

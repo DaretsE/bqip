@@ -101,11 +101,6 @@ fun AppRoot(vm: AppViewModel) {
             modifier = Modifier.align(Alignment.BottomCenter).padding(24.dp)
         )
 
-        ToastBanner(
-            message = state.toast,
-            modifier = Modifier.align(Alignment.TopCenter).padding(16.dp)
-        )
-
         LeftMenuOverlay(
             visible = state.overlay == Overlay.LEFT_MENU,
             categories = state.categories,
@@ -191,6 +186,13 @@ fun AppRoot(vm: AppViewModel) {
         FirstRunSetupOverlay(
             visible = state.overlay == Overlay.FIRST_RUN,
             provisioningAddress = state.provisioningAddress
+        )
+
+        // Rendered last so it's always on top — including over the opaque
+        // full-screen first-run setup panel, where error toasts matter most.
+        ToastBanner(
+            message = state.toast,
+            modifier = Modifier.align(Alignment.TopCenter).padding(16.dp)
         )
 
         if (state.loading) {
