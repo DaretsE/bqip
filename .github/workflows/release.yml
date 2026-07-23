@@ -1,18 +1,25 @@
 name: Release APK
 
-# Push a tag like "v1.0.0" (or run this workflow manually and supply one)
-# to build a release APK and publish it as a GitHub Release. The app's
-# in-app updater (UpdateManager.kt) polls exactly this Releases feed, so
-# every tag pushed here becomes an update your TVs will offer to install.
+# Builds and publishes a new GitHub Release automatically on every push to
+# main. The version is computed automatically (last release's patch + 1),
+# so you never have to create/push a tag by hand — just upload/commit your
+# changes on GitHub and this runs on its own. The app's in-app updater
+# (UpdateManager.kt) polls exactly this Releases feed, so every push here
+# becomes an update your TVs will offer to install.
+#
+# workflow_dispatch is kept as a manual fallback if you ever want to force
+# a specific version.
 on:
   push:
-    tags:
-      - "v*.*.*"
+    branches: [main]
+    paths-ignore:
+      - "**.md"
+      - ".github/workflows/**"
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Version tag to build, e.g. v1.0.0'
-        required: true
+        description: 'Force a specific version tag, e.g. v1.0.0 (leave empty to auto-increment)'
+        required: false
 
 permissions:
   contents: write
@@ -23,16 +30,33 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # need full tag history to compute the next version
 
       - name: Resolve version
         id: version
         run: |
-          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          MANUAL_TAG="${{ github.event.inputs.tag }}"
+          if [ -n "$MANUAL_TAG" ]; then
+            TAG="$MANUAL_TAG"
+          else
+            LAST_TAG=$(git tag --list 'v*.*.*' --sort=-v:refname | head -n1)
+            if [ -z "$LAST_TAG" ]; then
+              TAG="v1.0.0"
+            else
+              VERSION="${LAST_TAG#v}"
+              MAJOR=$(echo "$VERSION" | cut -d. -f1)
+              MINOR=$(echo "$VERSION" | cut -d. -f2)
+              PATCH=$(echo "$VERSION" | cut -d. -f3)
+              TAG="v${MAJOR}.${MINOR}.$((PATCH + 1))"
+            fi
+          fi
           VERSION="${TAG#v}"
           MAJOR=$(echo "$VERSION" | cut -d. -f1)
           MINOR=$(echo "$VERSION" | cut -d. -f2)
           PATCH=$(echo "$VERSION" | cut -d. -f3)
           CODE=$((MAJOR * 10000 + MINOR * 100 + PATCH))
+          echo "Building $TAG (versionCode $CODE)"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "name=$VERSION" >> "$GITHUB_OUTPUT"
           echo "code=$CODE" >> "$GITHUB_OUTPUT"
