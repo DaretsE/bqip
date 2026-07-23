@@ -169,7 +169,16 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         if (provisioningServer != null) return
         val server = ProvisioningServer { playlistUrl, epgUrl ->
             viewModelScope.launch { loadPlaylist(playlistUrl, epgUrl) }
-            stopProvisioning()
+            // Stop the server a moment later, not immediately: stopping it
+            // synchronously here would race the HTTP response NanoHTTPD is
+            // still writing back to the phone's browser for this very
+            // request, and NanoHTTPD.stop() force-closes open connections —
+            // that's what was causing "site can't be reached" on the phone
+            // right after tapping submit.
+            viewModelScope.launch {
+                kotlinx.coroutines.delay(2000)
+                stopProvisioning()
+            }
         }
         try {
             server.start()
