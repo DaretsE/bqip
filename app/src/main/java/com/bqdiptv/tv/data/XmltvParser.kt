@@ -1,0 +1,92 @@
+package com.bqdiptv.tv.data
+
+import com.bqdiptv.tv.model.EpgProgram
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserFactory
+import java.io.StringReader
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.TimeZone
+
+/**
+ * Parses a standard XMLTV feed (<tv><programme channel="" start="" stop="">).
+ * Times look like "20260723201400 +0300".
+ */
+object XmltvParser {
+
+    private val fmt = SimpleDateFormat("yyyyMMddHHmmss Z", Locale.US)
+
+    suspend fun fetch(url: String, client: OkHttpClient): List<EpgProgram> {
+        val request = Request.Builder().url(url).build()
+        client.newCall(request).execute().use { resp ->
+            if (!resp.isSuccessful) throw IllegalStateException("HTTP ${resp.code}")
+            val body = resp.body?.string() ?: return emptyList()
+            return parse(body)
+        }
+    }
+
+    fun parse(xml: String): List<EpgProgram> {
+        val programs = mutableListOf<EpgProgram>()
+        val factory = XmlPullParserFactory.newInstance()
+        factory.isNamespaceAware = false
+        val parser = factory.newPullParser()
+        parser.setInput(StringReader(xml))
+
+        var channelId = ""
+        var start = 0L
+        var stop = 0L
+        var title = ""
+        var desc: String? = null
+        var inProgramme = false
+        var currentTag = ""
+
+        var event = parser.eventType
+        while (event != XmlPullParser.END_DOCUMENT) {
+            when (event) {
+                XmlPullParser.START_TAG -> {
+                    currentTag = parser.name
+                    if (currentTag == "programme") {
+                        inProgramme = true
+                        channelId = parser.getAttributeValue(null, "channel") ?: ""
+                        start = parseTime(parser.getAttributeValue(null, "start"))
+                        stop = parseTime(parser.getAttributeValue(null, "stop"))
+                        title = ""
+                        desc = null
+                    }
+                }
+                XmlPullParser.TEXT -> {
+                    if (inProgramme) {
+                        val text = parser.text?.trim().orEmpty()
+                        if (text.isNotEmpty()) {
+                            when (currentTag) {
+                                "title" -> title = text
+                                "desc" -> desc = text
+                            }
+                        }
+                    }
+                }
+                XmlPullParser.END_TAG -> {
+                    if (parser.name == "programme") {
+                        inProgramme = false
+                        if (channelId.isNotBlank() && start > 0 && stop > start) {
+                            programs += EpgProgram(channelId, title.ifBlank { "Без названия" }, desc, start, stop)
+                        }
+                    }
+                }
+            }
+            event = parser.next()
+        }
+        return programs
+    }
+
+    private fun parseTime(raw: String?): Long {
+        if (raw.isNullOrBlank()) return 0L
+        return try {
+            fmt.parse(raw)?.time ?: 0L
+        } catch (e: Exception) {
+            0L
+        }
+    }
+}

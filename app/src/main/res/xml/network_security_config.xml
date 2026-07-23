@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Many IPTV playlists / EPG sources and local phone-provisioning traffic are
+  plain HTTP. This config allows cleartext traffic app-wide, which is normal
+  for IPTV players. Tighten this if you only ever use https:// sources.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>
