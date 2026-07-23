@@ -1,6 +1,6 @@
 name: CI Build Check
 
-# Runs on every push/PR so you find out immediately if something doesn't
+# Runs on every push/PR so you find out immediately if something doesn't-
 # compile, without waiting for a tag/release. Produces a downloadable debug
 # APK as a workflow artifact (Actions tab -> this run -> Artifacts), but
 # does NOT publish a GitHub Release and does NOT touch the update feed.
