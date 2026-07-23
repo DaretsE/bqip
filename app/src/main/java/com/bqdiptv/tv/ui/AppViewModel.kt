@@ -118,7 +118,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                     if (!effectiveEpgUrl.isNullOrBlank()) {
                         XmltvParser.fetch(effectiveEpgUrl, httpClient).groupBy { it.channelId }
                     } else emptyMap()
-                } catch (e: Exception) {
+                } catch (e: Throwable) {
+                    // Deliberately catches Throwable, not just Exception:
+                    // OutOfMemoryError is an Error, and an oversized EPG feed
+                    // should degrade to "no programme guide" rather than
+                    // crash the whole app.
                     emptyMap()
                 }
 
@@ -133,7 +137,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                     overlay = Overlay.NONE
                 )
                 first?.let { player.play(it.streamUrl) }
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 _state.value = _state.value.copy(
                     loading = false,
                     errorMessage = "Не удалось загрузить плейлист: ${e.message}",

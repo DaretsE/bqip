@@ -12,6 +12,11 @@ import java.io.StringReader
 /**
  * Minimal but reasonably robust #EXTM3U parser: handles tvg-id, tvg-logo,
  * group-title attributes and tvg-name/plain fallback for the channel name.
+ *
+ * Streams line-by-line from the HTTP response instead of buffering the
+ * whole playlist into one String first (large IPTV playlists can be tens
+ * of MB — the same class of bug that caused an OutOfMemoryError in
+ * XmltvParser was latent here too, just less likely to be hit in practice).
  */
 object M3uParser {
 
@@ -21,14 +26,16 @@ object M3uParser {
         val request = Request.Builder().url(url).build()
         client.newCall(request).execute().use { resp ->
             if (!resp.isSuccessful) throw IllegalStateException("HTTP ${resp.code}")
-            val body = resp.body?.string() ?: throw IllegalStateException("Пустой ответ")
-            parse(body)
+            val body = resp.body ?: throw IllegalStateException("Пустой ответ")
+            body.charStream().use { reader -> parse(BufferedReader(reader)) }
         }
     }
 
-    fun parse(content: String): List<Channel> {
+    /** Convenience overload for callers/tests that already have the M3U as a String. */
+    fun parse(content: String): List<Channel> = parse(BufferedReader(StringReader(content)))
+
+    fun parse(reader: BufferedReader): List<Channel> {
         val channels = mutableListOf<Channel>()
-        val reader = BufferedReader(StringReader(content))
         var pendingName: String? = null
         var pendingLogo: String? = null
         var pendingGroup: String? = null
