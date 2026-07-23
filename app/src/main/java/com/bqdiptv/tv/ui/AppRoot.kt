@@ -74,7 +74,9 @@ fun AppRoot(vm: AppViewModel) {
             .focusable()
             .onKeyEvent { event ->
                 if (event.type != KeyEventType.KeyDown) return@onKeyEvent false
-                if (state.overlay != Overlay.NONE) {
+                if (state.lastCrashLog != null) {
+                    if (event.key == Key.Back) { vm.dismissCrashLog(); true } else false
+                } else if (state.overlay != Overlay.NONE) {
                     if (event.key == Key.Back) {
                         vm.setOverlay(Overlay.NONE); true
                     } else false
@@ -198,5 +200,7 @@ fun AppRoot(vm: AppViewModel) {
         if (state.loading) {
             CircularProgressIndicator(color = BqColors.accent2, modifier = Modifier.align(Alignment.Center))
         }
+
+        CrashLogOverlay(log = state.lastCrashLog, onDismiss = { vm.dismissCrashLog() })
     }
 }

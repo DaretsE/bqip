@@ -28,13 +28,17 @@ enum class GraphicsQuality { HIGH, LOW }
  */
 object GraphicsQualityDetector {
     fun detect(context: Context): GraphicsQuality {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return GraphicsQuality.LOW // no RenderEffect blur pre-API31
-        val am = context.getSystemService<ActivityManager>() ?: return GraphicsQuality.LOW
-        val info = ActivityManager.MemoryInfo()
-        am.getMemoryInfo(info)
-        val totalRamGb = info.totalMem / (1024.0 * 1024.0 * 1024.0)
-        val lowRamDevice = am.isLowRamDevice
-        return if (!lowRamDevice && totalRamGb >= 2.5) GraphicsQuality.HIGH else GraphicsQuality.LOW
+        return try {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return GraphicsQuality.LOW // no RenderEffect blur pre-API31
+            val am = context.getSystemService<ActivityManager>() ?: return GraphicsQuality.LOW
+            val info = ActivityManager.MemoryInfo()
+            am.getMemoryInfo(info)
+            val totalRamGb = info.totalMem / (1024.0 * 1024.0 * 1024.0)
+            val lowRamDevice = am.isLowRamDevice
+            if (!lowRamDevice && totalRamGb >= 2.5) GraphicsQuality.HIGH else GraphicsQuality.LOW
+        } catch (e: Exception) {
+            GraphicsQuality.LOW
+        }
     }
 }
 

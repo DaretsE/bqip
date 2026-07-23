@@ -37,7 +37,8 @@ data class AppUiState(
     val errorMessage: String? = null,
     val toast: String? = null,
     val graphicsQuality: GraphicsQuality = GraphicsQuality.LOW,
-    val graphicsAuto: Boolean = true
+    val graphicsAuto: Boolean = true,
+    val lastCrashLog: String? = null
 )
 
 class AppViewModel(application: Application) : AndroidViewModel(application) {
@@ -53,6 +54,17 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         player.setOnError { onPlaybackError() }
+
+        // If the previous run crashed, BqdiptvApp's uncaught-exception
+        // handler will have written the stack trace here — surface it once.
+        val crashFile = java.io.File(application.filesDir, "last_crash.txt")
+        if (crashFile.exists()) {
+            val log = try { crashFile.readText() } catch (e: Exception) { null }
+            crashFile.delete()
+            if (!log.isNullOrBlank()) {
+                _state.value = _state.value.copy(lastCrashLog = log)
+            }
+        }
 
         val detected = GraphicsQualityDetector.detect(application)
         viewModelScope.launch {
@@ -77,6 +89,10 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 loadPlaylist(savedPlaylist, showAsOverlay = false)
             }
         }
+    }
+
+    fun dismissCrashLog() {
+        _state.value = _state.value.copy(lastCrashLog = null)
     }
 
     fun toggleEconomyMode() {
@@ -195,7 +211,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun stopProvisioning() {
-        provisioningServer?.stop()
+        try {
+            provisioningServer?.stop()
+        } catch (e: Exception) {
+            // Best-effort shutdown; a failure here must never crash the app.
+        }
         provisioningServer = null
         _state.value = _state.value.copy(provisioningActive = false)
     }

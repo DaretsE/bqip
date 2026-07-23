@@ -30,9 +30,16 @@ class PlayerHolder(context: Context) {
     }
 
     fun play(streamUrl: String) {
-        player.setMediaItem(MediaItem.fromUri(streamUrl))
-        player.prepare()
-        player.playWhenReady = true
+        try {
+            player.setMediaItem(MediaItem.fromUri(streamUrl))
+            player.prepare()
+            player.playWhenReady = true
+        } catch (e: Exception) {
+            // A malformed URL or similar synchronous failure should behave
+            // exactly like a playback error (skip to next channel), not
+            // crash the app.
+            onErrorCallback?.invoke()
+        }
     }
 
     fun release() {
