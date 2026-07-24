@@ -273,7 +273,7 @@ object EpgManager {
 
     private fun normalize(s: String): String =
         s.lowercase()
-            .replace(Regex("\b(hd|fhd|uhd|4k|sd|\+\d+|канал)\b"), "")
+            .replace(Regex("\\b(hd|fhd|uhd|4k|sd|\\+\\d+|канал)\\b"), "")  // <--- исправлено
             .replace(Regex("[^a-zа-я0-9]"), "")
             .trim()
 

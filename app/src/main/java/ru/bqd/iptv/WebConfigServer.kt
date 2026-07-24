@@ -115,7 +115,7 @@ class WebConfigServer(private val onAction: (String) -> Unit) : NanoHTTPD(PORT) 
         return bad("unknown")
     }
 
-    private fun ok() = newFixedLengthResponse(Response.Status.OK, "application/json", "{"ok":true}")
+    private fun ok() = newFixedLengthResponse(Response.Status.OK, "application/json", "{\"ok\":true}")
     private fun bad(msg: String) = newFixedLengthResponse(Response.Status.BAD_REQUEST, "application/json",
         JSONObject().put("ok", false).put("error", msg).toString())
 
@@ -230,9 +230,9 @@ function render(s){
  (s.playlists||[]).forEach(function(p){
   h+='<div class="card"><div class="row"><div class="grow"><div class="name">'+esc(p.name)+(p.hidden?'<span class="tag">скрыт</span>':'')+'</div><div class="url">'+esc(p.url)+'</div></div></div>'+
      '<div class="row" style="margin-top:10px;gap:8px">'+
-     '<button class="sec-btn" style="flex:1" onclick="renamePl(''+enc(p.url)+'')">✏️ Имя</button>'+
-     '<button class="sec-btn" style="flex:1" onclick="hidePl(''+enc(p.url)+'','+(p.hidden?0:1)+')">'+(p.hidden?'👁 Показать':'🙈 Скрыть')+'</button>'+
-     '<button class="iconbtn red" onclick="delPl(''+enc(p.url)+'')">🗑</button></div></div>';
+     '<button class="sec-btn" style="flex:1" onclick="renamePl(\''+enc(p.url)+'\')">✏️ Имя</button>'+
+     '<button class="sec-btn" style="flex:1" onclick="hidePl(\''+enc(p.url)+'\','+(p.hidden?0:1)+')">'+(p.hidden?'👁 Показать':'🙈 Скрыть')+'</button>'+
+     '<button class="iconbtn red" onclick="delPl(\''+enc(p.url)+'\')">🗑</button></div></div>';
  });
  document.getElementById('pls').innerHTML=h||'<div class="empty">Пока нет плейлистов</div>';
 
@@ -241,8 +241,8 @@ function render(s){
  (s.epg||[]).forEach(function(x){
   e+='<div class="card"><div class="row"><div class="grow"><div class="name">'+esc(x.name)+'</div><div class="url">'+esc(x.url)+'</div></div></div>'+
      '<div class="row" style="margin-top:10px;gap:8px">'+
-     '<button class="sec-btn" style="flex:1" onclick="renameEpg(''+enc(x.url)+'')">✏️ Имя</button>'+
-     '<button class="iconbtn red" onclick="delEpg(''+enc(x.url)+'')">🗑</button></div></div>';
+     '<button class="sec-btn" style="flex:1" onclick="renameEpg(\''+enc(x.url)+'\')">✏️ Имя</button>'+
+     '<button class="iconbtn red" onclick="delEpg(\''+enc(x.url)+'\')">🗑</button></div></div>';
  });
  document.getElementById('epgs').innerHTML=e||'<div class="empty">Источники EPG не добавлены</div>';
 
@@ -252,7 +252,7 @@ function render(s){
   f+='<div class="card row"><div class="grow"><div class="name">'+esc(c.name)+'</div></div>'+
      '<button class="iconbtn" onclick="favMove('+i+',-1)">▲</button>'+
      '<button class="iconbtn" onclick="favMove('+i+',1)">▼</button>'+
-     '<button class="iconbtn red" onclick="favDel(''+enc(c.url)+'')">✕</button></div>';
+     '<button class="iconbtn red" onclick="favDel(\''+enc(c.url)+'\')">✕</button></div>';
  });
  document.getElementById('favs').innerHTML=f||'<div class="empty">Избранное пусто. Удерживайте ОК на пульте, чтобы добавить канал.</div>';
 }

@@ -96,8 +96,6 @@ class PlayerActivity : Activity() {
     private lateinit var setupOverlay: View
     private lateinit var setupUrl: TextView
     private lateinit var qrImage: ImageView
-    private lateinit var phoneSetup: View
-    private lateinit var phoneSetupStatus: TextView
     private lateinit var screensaver: FrameLayout
     private lateinit var ssClock: TextView
 
@@ -235,8 +233,6 @@ class PlayerActivity : Activity() {
         setupOverlay = findViewById(R.id.setupOverlay)
         setupUrl = findViewById(R.id.setupUrl)
         qrImage = findViewById(R.id.qrImage)
-        phoneSetup = findViewById(R.id.phoneSetup)
-        phoneSetupStatus = findViewById(R.id.phoneSetupStatus)
         screensaver = findViewById(R.id.screensaver)
         ssClock = findViewById(R.id.ssClock)
         searchOverlay = findViewById(R.id.searchOverlay)
@@ -428,7 +424,6 @@ class PlayerActivity : Activity() {
                         if (failed.isNotEmpty()) toast("Не удалось загрузить: ${failed.joinToString(", ")}")
                     } else {
                         setupOverlay.visibility = View.GONE
-                        phoneSetup.visibility = View.GONE
                         if (currentChannel == null) restoreLastChannel()
                         else rebuildZapList(keepCurrent = true)
                         if (failed.isNotEmpty()) toast("Не загрузились: ${failed.joinToString(", ")}")
@@ -563,13 +558,11 @@ class PlayerActivity : Activity() {
     private fun handleStreamError() {
         errorStreak++
         if (errorStreak > maxOf(6, zapList.size)) {
-            errorMsg.text = "Не удаётся воспроизвести каналы.
-Проверьте подключение к интернету."
+            errorMsg.text = "Не удаётся воспроизвести каналы.\nПроверьте подключение к интернету."
             errorMsg.visibility = View.VISIBLE
             return
         }
-        errorMsg.text = "Сигнал канала временно недоступен.
-Переключаем на следующий..."
+        errorMsg.text = "Сигнал канала временно недоступен.\nПереключаем на следующий..."
         errorMsg.visibility = View.VISIBLE
         handler.removeCallbacks(errorZapRunnable)
         handler.postDelayed(errorZapRunnable, 3000)
@@ -1615,10 +1608,7 @@ class PlayerActivity : Activity() {
             if (info.versionCode > cur) {
                 AlertDialog.Builder(this)
                     .setTitle("Доступно обновление")
-                    .setMessage("Новая версия ${info.versionName}
-Текущая: ${UpdateManager.currentName(this)}
-
-${info.notes}".trim())
+                    .setMessage("Новая версия ${info.versionName}\nТекущая: ${UpdateManager.currentName(this)}\n\n${info.notes}".trim())
                     .setPositiveButton("Обновить") { _, _ -> startDownload(info.apkUrl, info.versionCode) }
                     .setNegativeButton("Позже", null).show()
             } else if (!silent) toast("У вас последняя версия (${UpdateManager.currentName(this)})")
@@ -1630,10 +1620,7 @@ ${info.notes}".trim())
             if (info == null || info.prevUrl.isEmpty()) { toast("Предыдущая версия не найдена"); return@checkAsync }
             AlertDialog.Builder(this)
                 .setTitle("Вернуться на предыдущую версию")
-                .setMessage("Будет установлена версия ${info.prevName}.
-Настройки и данные сохранятся.
-
-На некоторых ТВ может потребоваться подтвердить установку вручную.")
+                .setMessage("Будет установлена версия ${info.prevName}.\nНастройки и данные сохранятся.\n\nНа некоторых ТВ может потребоваться подтвердить установку вручную.")
                 .setPositiveButton("Вернуться") { _, _ -> startDownload(info.prevUrl, info.prevCode) }
                 .setNegativeButton("Отмена", null).show()
         }
@@ -1955,7 +1942,6 @@ ${info.notes}".trim())
                             toast("Декодер: ${Quality.decoderLabel()}"); rerenderDetail()
                         }
                     }))
-                // НОВАЯ СТРОКА: выбор плеера
                 val engineVals = listOf("internal", "exo", "vlc", "mx")
                 rows.add(SdRow(label = "Плеер для воспроизведения", cells =
                     listOf("Встроенный", "ExoPlayer", "VLC", "MX Player").mapIndexed { i, o ->
@@ -1966,7 +1952,6 @@ ${info.notes}".trim())
                             rerenderDetail()
                         }
                     }))
-                // -------------------------------------------------
                 rows.add(SdRow(label = "Автофреймрейт (AFR)", cells = listOf(
                     SdCell("toggle", "", on = Store.afr) {
                         Store.afr = !Store.afr
@@ -2140,8 +2125,7 @@ ${info.notes}".trim())
                 LinearLayout.LayoutParams.WRAP_CONTENT).apply { leftMargin = dp(11) })
         card.addView(appRow)
 
-        val ver = sdText("Версия: ${UpdateManager.currentName(this)}
-Сборка: ${UpdateManager.currentCode(this)} · Android TV",
+        val ver = sdText("Версия: ${UpdateManager.currentName(this)}\nСборка: ${UpdateManager.currentCode(this)} · Android TV",
             14f, 0xFFA9C0C8.toInt())
         ver.gravity = Gravity.CENTER
         card.addView(ver, LinearLayout.LayoutParams(
@@ -2165,7 +2149,6 @@ ${info.notes}".trim())
         } catch (_: Exception) { }
         img.setBackgroundColor(0xFFFFFFFF.toInt())
         img.setPadding(dp(10), dp(10), dp(10), dp(10))
-        // УВЕЛИЧЕНО до 280 dp
         box.addView(img, LinearLayout.LayoutParams(dp(280), dp(280)))
         val tv = sdText(url, 24f, 0xFF63D4E2.toInt(), bold = true)
         tv.gravity = Gravity.CENTER
